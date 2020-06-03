@@ -67,11 +67,11 @@ public class StreamingCep_Ljw {
             }
         });
 
-        matchStream.print();
+        matchStream.printToErr();
         env.execute("execute cep");
 
     }
 
 
-
-}//
+//tttttttest
+}
