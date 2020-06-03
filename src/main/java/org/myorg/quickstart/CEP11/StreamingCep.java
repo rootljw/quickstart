@@ -39,7 +39,7 @@ public class StreamingCep {
 
                 Tuple3.of("LiLei", "帽子",1L),
                 Tuple3.of("LiLei", "帽子",2L),
-                Tuple3.of("LiLei", "帽子",3L)
+                Tuple3.of("LiLei", "毛帽子",3L)
         );
         //定义Pattern,寻找连续搜索帽子的用户
         Pattern<Tuple3<String, String, Long>, Tuple3<String, String, Long>> pattern = Pattern
