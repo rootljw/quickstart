@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="https://jscdn.com.cn/highcharts/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* css 代码  */
+    </style>
+    <script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com.cn/highmaps/modules/map.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+
+    <script src="https://code.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script src="https://code.highcharts.com.cn/highmaps/highmaps.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+</head>
+<body>
+<div id="map" style="height:800px"></div>
+<script>
+
+    Highcharts.setOptions({
+        lang: {
+            drillUpText: '< 返回 “{series.name}”'
+        }
+    });
+    var map = null;
+    $.getJSON('https://data.jianshukeji.com/jsonp?filename=geochina/china.json&callback=?', function (mapdata) {
+        var data = [{
+            name: '北京',
+            value: 5000
+        }, {
+            name: '上海',
+            value: 1000
+        }, {
+            name: '广东',
+            value: 2200
+        }, {
+            name: '浙江',
+            value: 1800
+        }, {
+            name: '福建',
+            value: 3000
+        }, {
+            name: '河北',
+            value: 9000
+        }, {
+            name: '山东',
+            value: 8000
+        }, {
+            name: '山西',
+            value: 6000
+        }, {
+            name: '内蒙古',
+            value: 1000
+        }, {
+            name: '辽宁',
+            value: 3000
+        }, {
+            name: '陕西',
+            value: 2000
+        }];
+        map = new Highcharts.Map('map', {
+            title: {
+                text: '装机分布'
+            },
+            mapNavigation: {
+                enabled: true,
+                buttonOptions: {
+                    verticalAlign: 'bottom'
+                }
+            },
+            colorAxis: {
+                min: 0,
+                minColor: '#fff',
+                maxColor: '#006cee',
+                labels: {
+                    style: {
+                        "color": "red", "fontWeight": "bold"
+                    }
+                }
+            },
+            series: [{
+                data: data,
+                mapData: mapdata,
+                joinBy: 'name',
+                name: '车晓安装'
+            }]
+        });
+    });
+
+
+</script>
+</body>
+</html>
+
+

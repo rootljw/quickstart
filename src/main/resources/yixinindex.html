@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+
+    <script src="https://code.highcharts.com.cn/highmaps/modules/map.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
+
+    <script src="https://code.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script src="https://code.highcharts.com.cn/highmaps/highmaps.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <meta charset="utf-8">
+    <title>Walnut</title>
+</head>
+<body>
+
+<div id="container2" style="width:1200px">
+
+    <div id="header" style="background-color:#8085e9;">
+        <h1 style="margin-bottom:0;">易鑫首页</h1></div>
+
+    <div id="menu" style="background-color:#60a5e7;height:1690px;width:150px;float:left;">
+        <b> 客 户 </b><br>
+        <a href="http://www.baidu.com">易鑫</a><br>
+        <a href="http://www.baidu.com"> 汽</a><br>
+        <a href="http://www.baidu.com">先锋</a><br>
+        <a href="http://www.baidu.com">平安</a><br>
+        <a href="http://www.baidu.com">裕隆</a><br>
+        <a href="http://www.baidu.com">花生</a><br>
+    </div>
+
+    <div id="content" style="background-color:#EEEEEE;height:1690px;width:1050px;float:left;">
+        <div id="mom" style="width:1000px;height:400px"></div>
+        <div id="wow" style="width:1000px;height:400px"></div>
+        <div id="yoy" style="width:1000px;height:400px"></div>
+        <br>
+        <div id="map" style="float:left;width:500px;height:450px;"></div>
+        <div id="piechart" style="float:left;width:450px;height:450px;margin-left:50px"></div>
+
+    </div>
+    <!--地图-->
+    <script>
+        var map = null;
+
+        $.getJSON('https://data.jianshukeji.com/jsonp?filename=geochina/china.json&callback=?', function (mapdata) {
+            var data = [{
+                name: '北京',
+                value: 5000
+            }, {
+                name: '上海',
+                value: 1000
+            }, {
+                name: '广东',
+                value: 2200
+            }, {
+                name: '浙江',
+                value: 1800
+            }, {
+                name: '福建',
+                value: 3000
+            }, {
+                name: '河北',
+                value: 7000
+            }, {
+                name: '山东',
+                value: 7000
+            }, {
+                name: '山西',
+                value: 6000
+            }, {
+                name: '内蒙古',
+                value: 1000
+            }, {
+                name: '辽宁',
+                value: 3000
+            }, {
+                name: '陕西',
+                value: 2000
+            }];
+            map = new Highcharts.Map('map', {
+                title: {
+                    text: '六月装机分布'
+                },
+                mapNavigation: {
+                    enabled: true,
+                    buttonOptions: {
+                        verticalAlign: 'bottom'
+                    }
+                },
+                colorAxis: {
+                    min: 0,
+                    minColor: '#fff',
+                    maxColor: '#006cee',
+                    labels: {
+                        style: {
+                            "color": "red", "fontWeight": "bold"
+                        }
+                    }
+                },
+                series: [{
+                    data: data,
+                    mapData: mapdata,
+                    joinBy: 'name',
+                    name: '车晓安装'
+                }]
+            });
+        });
+
+
+    </script>
+    <!--月环比-->
+    <script>
+        var chart1 = Highcharts.chart('mom', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '月装机量'
+            },
+            // subtitle: {
+            //     text: '数据来源: WorldClimate.com'
+            // },
+            xAxis: {
+                categories: [
+                    '一月', '二月', '三月', '四月', '五月', '六月'
+                ],
+                crosshair: true
+            },
+            yAxis: [{
+                min: 0,
+                title: {
+                    text: '装机量(台)'
+                }
+            }, { // Secondary yAxis
+                title: {
+                    text: '月环比',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    //format: '{value} mm',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                // head + 每个 point + footer 拼接成完整的 table
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y} </b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: '车晓',
+                data: [1490, 910, 1060, 1290, 1440, 1760]
+            }, {
+                name: '易鑫',
+                data: [83, 78, 98, 93, 106, 84]
+            }, {
+                type: 'spline',
+                yAxis: 1,
+                name: '车晓环比',
+                data: [0.22, 0.44, 0.31, 0.33, -0.33, 0.22],
+                marker: {
+                    lineWidth: 2,
+                    lineColor: Highcharts.getOptions().colors[0],
+                    fillColor: 'white'
+                }
+            }
+                , {
+                    type: 'spline',
+                    yAxis: 1,
+                    name: '易鑫环比',
+                    data: [0.12, 0.24, 0.41, 0.30, -0.13, 0.32],
+                    marker: {
+                        lineWidth: 2,
+                        lineColor: Highcharts.getOptions().colors[1],
+                        fillColor: 'white'
+                    }
+                }
+            ]
+        });
+    </script>
+    <!--周环比-->
+    <script>
+        var chart1 = Highcharts.chart('wow', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '周装机量'
+            },
+            // subtitle: {
+            //     text: '数据来源: WorldClimate.com'
+            // },
+            xAxis: {
+                categories: [
+                    '34周', '35周', '36周', '37周', '38周', '39周'
+                ],
+                crosshair: true
+            },
+            yAxis: [{
+                min: 0,
+                title: {
+                    text: '装机量(台)'
+                }
+            }, { // Secondary yAxis
+                title: {
+                    text: '周环比',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    //format: '{value} mm',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                // head + 每个 point + footer 拼接成完整的 table
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y} </b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: '车晓',
+                data: [149, 91, 106, 129, 144, 176]
+            }, {
+                name: '易鑫',
+                data: [33, 48, 48, 33, 56, 64]
+            }, {
+                type: 'spline',
+                yAxis: 1,
+                name: '车晓环比',
+                data: [0.12, 0.24, 0.36, 0.13, -0.13, 0.12],
+                marker: {
+                    lineWidth: 2,
+                    lineColor: Highcharts.getOptions().colors[0],
+                    fillColor: 'white'
+                }
+            }
+                , {
+                    type: 'spline',
+                    yAxis: 1,
+                    name: '易鑫环比',
+                    data: [0.02, 0.14, 0.41, -0.20, 0.23, 0.32],
+                    marker: {
+                        lineWidth: 2,
+                        lineColor: Highcharts.getOptions().colors[1],
+                        fillColor: 'white'
+                    }
+                }
+            ]
+        });
+    </script>
+    <!--饼图-->
+    <script>
+        Highcharts.chart('piechart', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: '6月客户装机量占比'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: '客户',
+                colorByPoint: true,
+                data: [{
+                    name: '易鑫',
+                    y: 61.41,
+                    sliced: true,
+                    selected: true
+                }, {
+                    name: '先锋',
+                    y: 11.84
+                }, {
+                    name: '广汽',
+                    y: 10.85
+                }, {
+                    name: '平安',
+                    y: 5.87
+                }, {
+                    name: '裕隆',
+                    y: 4.18
+                }, {
+                    name: '花生',
+                    y: 1.64
+                }, {
+                    name: '平安经租',
+                    y: 1.6
+                }, {
+                    name: 'Other',
+                    y: 2.61
+                }]
+            }]
+        });</script>
+    <!--yoy-->
+    <script>
+        // JS 代码
+        var chart = Highcharts.chart('yoy', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '月装机量'
+            },
+            // subtitle: {
+            //     text: '数据来源: WorldClimate.com'
+            // },
+            xAxis: {
+                categories: [
+                    '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'
+                ],
+                crosshair: true
+            },
+            yAxis: [{
+                min: 0,
+                title: {
+                    text: '装机量(台)'
+                }
+            }, { // Secondary yAxis
+                title: {
+                    text: '同比',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    //format: '{value} mm',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                // head + 每个 point + footer 拼接成完整的 table
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: '易鑫2020',
+                data: [1490, 910, 1060, 1290, 1440, 1760, 1356, 1485, 2164, 1941, 956, 544],
+            }, {
+                name: '易鑫2019',
+                data: [1009, 401, 1006, 1029, 1040, 1360, 1250, 1840, 2000, 1840, 756, 644]
+            }, {
+                type: 'spline',
+                yAxis: 1,
+                name: '月同比',
+                data: [0.22, 0.44, 0.31, 0.33, -0.33, 0.22, 0.44, 0.31, 0.33, -0.33, 0.31, 0.33],
+                marker: {
+                    lineWidth: 2,
+                    lineColor: Highcharts.getOptions().colors[0],
+                    fillColor: 'white'
+                }
+            }
+
+
+            ]
+        });
+    </script>
+        <div id="footer" style="background-color:#EEEEEE;clear:both;text-align:center;width:1200px">
+            版权 © chexiao.co
+        </div>
+
+</div>
+
+</body>
+</html>
